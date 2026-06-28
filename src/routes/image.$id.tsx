@@ -90,12 +90,21 @@ function ImagePage() {
     else navigate({ to: "/" });
   }
 
+  const [shareOpen, setShareOpen] = useState(false);
   async function share() {
     const url = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: "PixHunt Image", url }); return; } catch {}
+    const title = "PixHunt Image";
+    // Web Share API is often blocked in iframes/previews — try it, but always
+    // fall back to our own share sheet so users can still share.
+    if (typeof navigator !== "undefined" && (navigator as any).share && (navigator as any).canShare?.({ url })) {
+      try {
+        await (navigator as any).share({ title, url });
+        return;
+      } catch (e: any) {
+        if (e?.name === "AbortError") return;
+      }
     }
-    copyLink();
+    setShareOpen(true);
   }
 
   function copyLink() {
