@@ -180,9 +180,18 @@ function ImagePage() {
 
         {/* Author */}
         <div className="glass mt-5 flex items-center gap-3 rounded-2xl p-3">
-          <div className="bg-gradient-brand grid h-11 w-11 place-items-center rounded-full text-sm font-black text-white">
-            {img.user.slice(0, 1).toUpperCase()}
-          </div>
+          {img.userImageURL ? (
+            <img
+              src={img.userImageURL}
+              alt={img.user}
+              loading="lazy"
+              className="h-11 w-11 rounded-full object-cover ring-2 ring-primary/40"
+            />
+          ) : (
+            <div className="bg-gradient-brand grid h-11 w-11 place-items-center rounded-full text-sm font-black text-white ring-2 ring-primary/40">
+              {img.user.slice(0, 1).toUpperCase()}
+            </div>
+          )}
           <div className="leading-tight">
             <div className="text-xs text-muted-foreground">Photo by</div>
             <div className="text-sm font-bold">{img.user}</div>
