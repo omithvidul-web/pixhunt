@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ImageIdRouteImport } from './routes/image.$id'
 import { Route as DownloadIdRouteImport } from './routes/download.$id'
@@ -30,6 +31,11 @@ const SearchRoute = SearchRouteImport.update({
 const CategoriesRoute = CategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,6 +61,7 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/categories': typeof CategoriesRoute
   '/search': typeof SearchRoute
   '/trending': typeof TrendingRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/categories': typeof CategoriesRoute
   '/search': typeof SearchRoute
   '/trending': typeof TrendingRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/categories': typeof CategoriesRoute
   '/search': typeof SearchRoute
   '/trending': typeof TrendingRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/categories'
     | '/search'
     | '/trending'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/categories'
     | '/search'
     | '/trending'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/categories'
     | '/search'
     | '/trending'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   CategoriesRoute: typeof CategoriesRoute
   SearchRoute: typeof SearchRoute
   TrendingRoute: typeof TrendingRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/categories'
       fullPath: '/categories'
       preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   CategoriesRoute: CategoriesRoute,
   SearchRoute: SearchRoute,
   TrendingRoute: TrendingRoute,
@@ -187,3 +208,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
