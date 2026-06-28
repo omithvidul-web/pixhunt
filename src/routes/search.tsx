@@ -4,12 +4,10 @@ import { z } from "zod";
 import { Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { MasonryFeed } from "@/components/MasonryFeed";
-import { CATEGORIES } from "@/lib/categories";
 import { trackSearch } from "@/lib/analytics";
 
 const schema = z.object({
   q: fallback(z.string(), "").default(""),
-  cat: fallback(z.string(), "").default(""),
   order: fallback(z.enum(["popular", "latest"]), "popular").default("popular"),
 });
 
@@ -30,7 +28,7 @@ export const Route = createFileRoute("/search")({
 });
 
 function SearchPage() {
-  const { q, cat, order } = Route.useSearch();
+  const { q, order } = Route.useSearch();
   const navigate = useNavigate();
   const [input, setInput] = useState(q);
 
@@ -38,7 +36,7 @@ function SearchPage() {
     e.preventDefault();
     const v = input.trim();
     if (v) trackSearch(v);
-    navigate({ to: "/search", search: { q: v, cat, order } });
+    navigate({ to: "/search", search: { q: v, order } });
   }
 
   return (
@@ -61,33 +59,11 @@ function SearchPage() {
         </button>
       </form>
 
-      <div className="hide-scrollbar flex gap-2 overflow-x-auto">
-        <button
-          onClick={() => navigate({ to: "/search", search: { q, cat: "", order } })}
-          className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition ${
-            !cat ? "bg-gradient-brand text-white" : "glass"
-          }`}
-        >
-          All
-        </button>
-        {CATEGORIES.map((c) => (
-          <button
-            key={c.slug}
-            onClick={() => navigate({ to: "/search", search: { q: c.query, cat: c.slug, order } })}
-            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition ${
-              cat === c.slug ? "bg-gradient-brand text-white" : "glass"
-            }`}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
-
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
           <button
-            onClick={() => navigate({ to: "/search", search: { q, cat, order: "popular" } })}
+            onClick={() => navigate({ to: "/search", search: { q, order: "popular" } })}
             className={`rounded-full px-3 py-1 text-xs font-semibold ${
               order === "popular" ? "bg-gradient-brand text-white" : "text-muted-foreground"
             }`}
@@ -95,7 +71,7 @@ function SearchPage() {
             Popular
           </button>
           <button
-            onClick={() => navigate({ to: "/search", search: { q, cat, order: "latest" } })}
+            onClick={() => navigate({ to: "/search", search: { q, order: "latest" } })}
             className={`rounded-full px-3 py-1 text-xs font-semibold ${
               order === "latest" ? "bg-gradient-brand text-white" : "text-muted-foreground"
             }`}
