@@ -265,6 +265,80 @@ function ImagePage() {
           )}
         </section>
       </main>
+
+      {shareOpen && (
+        <ShareSheet
+          url={typeof window !== "undefined" ? window.location.href : ""}
+          title="Check out this image on PixHunt"
+          onClose={() => setShareOpen(false)}
+          onCopy={copyLink}
+          copied={copied}
+        />
+      )}
+    </div>
+  );
+}
+
+function ShareSheet({ url, title, onClose, onCopy, copied }: {
+  url: string; title: string; onClose: () => void; onCopy: () => void; copied: boolean;
+}) {
+  const u = encodeURIComponent(url);
+  const t = encodeURIComponent(title);
+  const targets = [
+    { name: "WhatsApp", color: "#25D366", href: `https://wa.me/?text=${t}%20${u}` },
+    { name: "Telegram", color: "#229ED9", href: `https://t.me/share/url?url=${u}&text=${t}` },
+    { name: "X", color: "#000000", href: `https://twitter.com/intent/tweet?url=${u}&text=${t}` },
+    { name: "Facebook", color: "#1877F2", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
+    { name: "Reddit", color: "#FF4500", href: `https://www.reddit.com/submit?url=${u}&title=${t}` },
+    { name: "Pinterest", color: "#E60023", href: `https://pinterest.com/pin/create/button/?url=${u}&description=${t}` },
+    { name: "Email", color: "#6B7280", href: `mailto:?subject=${t}&body=${u}` },
+  ];
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="glass w-full max-w-md rounded-t-3xl p-5 shadow-glow sm:rounded-3xl"
+      >
+        <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-muted-foreground/30 sm:hidden" />
+        <h3 className="mb-4 text-center text-lg font-black">Share image</h3>
+        <div className="grid grid-cols-4 gap-3">
+          {targets.map((s) => (
+            <a
+              key={s.name}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-1.5 rounded-2xl p-2 transition active:scale-95"
+            >
+              <span
+                className="grid h-12 w-12 place-items-center rounded-full text-base font-black text-white shadow-md"
+                style={{ background: s.color }}
+              >
+                {s.name.slice(0, 1)}
+              </span>
+              <span className="text-[11px] font-semibold">{s.name}</span>
+            </a>
+          ))}
+          <button
+            onClick={onCopy}
+            className="flex flex-col items-center gap-1.5 rounded-2xl p-2 transition active:scale-95"
+          >
+            <span className="bg-gradient-brand grid h-12 w-12 place-items-center rounded-full text-white shadow-glow">
+              🔗
+            </span>
+            <span className="text-[11px] font-semibold">{copied ? "Copied!" : "Copy Link"}</span>
+          </button>
+        </div>
+        <button
+          onClick={onClose}
+          className="glass mt-5 w-full rounded-2xl py-3 text-sm font-bold"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }
