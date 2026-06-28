@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-import { Download, ShieldCheck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Download, ShieldCheck, X } from "lucide-react";
 import { getActiveAdsterra, getDownloadTimer } from "@/lib/settings";
 import { trackDownload } from "@/lib/analytics";
+import { getImageById } from "@/lib/pixabay";
+import { useQuery } from "@tanstack/react-query";
+import { Logo } from "@/components/Logo";
 
 const schema = z.object({
   size: fallback(z.string(), "HD").default("HD"),
@@ -40,105 +43,139 @@ async function triggerBlobDownload(url: string, filename: string) {
 function DownloadPage() {
   const { id } = Route.useParams();
   const { size, url } = Route.useSearch();
-  const [remaining, setRemaining] = useState(getDownloadTimer());
-  const [done, setDone] = useState(false);
+  const navigate = useNavigate();
+  const total = getDownloadTimer();
+  const [remaining, setRemaining] = useState(total);
+  const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const adsOpened = useRef(false);
+
+  const { data: img } = useQuery({
+    queryKey: ["image", id],
+    queryFn: () => getImageById(id),
+  });
 
   const ext = (url.split("?")[0].split(".").pop() || "jpg").toLowerCase();
   const filename = `pixhunt-${id}-${size}.${ext}`;
 
+  // Open Adsterra once
   useEffect(() => {
+    if (adsOpened.current) return;
+    adsOpened.current = true;
     const ads = getActiveAdsterra();
     if (ads) {
       try { window.open(ads, "_blank", "noopener,noreferrer"); } catch {}
     }
   }, []);
 
+  // Countdown
   useEffect(() => {
-    if (remaining <= 0) return;
+    if (ready) return;
+    if (remaining <= 0) { setReady(true); return; }
     const t = setTimeout(() => setRemaining((v) => v - 1), 1000);
     return () => clearTimeout(t);
-  }, [remaining]);
+  }, [remaining, ready]);
 
   const startDownload = async () => {
     setError(null);
+    trackDownload();
     try {
       await triggerBlobDownload(url, filename);
     } catch (e: any) {
       setError(e?.message || "Download failed");
-      // Fallback: open the image in a new tab so user can save manually
       window.open(url, "_blank", "noopener,noreferrer");
     }
   };
 
-  useEffect(() => {
-    if (remaining === 0 && !done && url) {
-      setDone(true);
-      trackDownload();
-      startDownload();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remaining, done, url]);
+  const close = () => {
+    if (window.history.length > 1) window.history.back();
+    else navigate({ to: "/" });
+  };
 
-  const total = getDownloadTimer();
-  const pct = ((total - remaining) / total) * 100;
+  const pct = Math.min(100, ((total - remaining) / total) * 100);
+  const thumb = img?.webformatURL || url;
 
   return (
-    <main className="grid min-h-[70vh] place-items-center px-4 pb-10 pt-4">
-      <div className="glass w-full max-w-md rounded-3xl p-8 text-center shadow-glow">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-full bg-gradient-brand shadow-glow">
-          <Download className="h-10 w-10 text-white" />
-        </div>
-        <h1 className="text-2xl font-bold">Preparing your {size} download</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Your download will start automatically. Please wait a few seconds.
-        </p>
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-background/95 backdrop-blur-xl">
+      {/* Close */}
+      <div className="sticky top-0 z-10 flex justify-end p-3">
+        <button
+          onClick={close}
+          aria-label="Close"
+          className="glass grid h-11 w-11 place-items-center rounded-full shadow-glow"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
 
-        <div className="relative my-8 grid place-items-center">
-          <svg viewBox="0 0 100 100" className="h-32 w-32 -rotate-90">
-            <circle cx="50" cy="50" r="45" stroke="var(--muted)" strokeWidth="8" fill="none" />
-            <circle
-              cx="50" cy="50" r="45"
-              stroke="url(#g)" strokeWidth="8" fill="none"
-              strokeLinecap="round"
-              strokeDasharray={`${pct * 2.827} 282.7`}
-              className="transition-all duration-500"
-            />
-            <defs>
-              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" />
-                <stop offset="50%" stopColor="#8b5cf6" />
-                <stop offset="100%" stopColor="#d946ef" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <div className="absolute text-3xl font-black">
-            {done ? "✓" : remaining}
-          </div>
+      <main className="mx-auto flex max-w-md flex-col items-center px-6 pb-20 pt-2 text-center">
+        <Logo size={64} glow />
+
+        {/* Thumbnail */}
+        <div className="mt-6 overflow-hidden rounded-2xl bg-muted shadow-glow">
+          {thumb ? (
+            <img src={thumb} alt="" className="h-48 w-48 object-cover" />
+          ) : (
+            <div className="skeleton h-48 w-48" />
+          )}
         </div>
 
-        <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-          <ShieldCheck className="h-4 w-4 text-green-500" />
-          Secure download via PixHunt
-        </p>
+        {!ready ? (
+          <>
+            <h1 className="mt-8 flex items-center justify-center gap-2 text-2xl font-black">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+              Secure Verification
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Preparing your {size} download… Please wait.
+            </p>
 
-        {done && (
-          <div className="mt-6 flex flex-col items-center gap-3">
+            {/* Linear progress */}
+            <div className="mt-6 h-2.5 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="bg-gradient-brand h-full rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <div className="mt-4 text-4xl font-black tabular-nums">
+              {remaining}<span className="text-muted-foreground">s</span>
+            </div>
+
+            <div className="glass mt-8 rounded-full px-4 py-2 text-xs font-semibold">
+              {size}
+              {img && <> • {img.imageWidth}×{img.imageHeight} • by {img.user}</>}
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="mt-8 flex items-center justify-center gap-2 text-2xl font-black">
+              <Download className="h-6 w-6 text-primary" />
+              Ready to Download!
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Click below to save your {size} image.
+            </p>
+
             <button
-              type="button"
               onClick={startDownload}
-              className="bg-gradient-brand inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-glow"
+              className="bg-gradient-brand mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white shadow-glow transition active:scale-[0.98]"
             >
-              <Download className="h-4 w-4" /> Download didn't start? Tap here
+              <Download className="h-5 w-5" /> Download Now
             </button>
+
             {error && (
-              <p className="text-xs text-muted-foreground">
-                Auto-download blocked. Opened image in a new tab — long-press and choose Save Image.
+              <p className="mt-3 text-xs text-muted-foreground">
+                Auto-download blocked. Opened image in a new tab — long-press to save.
               </p>
             )}
-          </div>
+
+            <div className="glass mt-6 rounded-full px-4 py-2 text-xs font-semibold">
+              {size}
+              {img && <> • {img.imageWidth}×{img.imageHeight} • by {img.user}</>}
+            </div>
+          </>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
