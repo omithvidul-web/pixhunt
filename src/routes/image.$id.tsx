@@ -149,9 +149,16 @@ function ImagePage() {
           <span className="glass inline-flex items-center gap-1 rounded-full px-3 py-1">
             <Eye className="h-3.5 w-3.5" /> {formatK(img.views)}
           </span>
-          <span className="glass inline-flex items-center gap-1 rounded-full px-3 py-1 text-rose-500">
-            <Heart className="h-3.5 w-3.5 fill-current" /> {formatK(img.likes)}
-          </span>
+          <button
+            type="button"
+            onClick={toggleLike}
+            aria-pressed={liked}
+            aria-label={liked ? "Unlike" : "Like"}
+            className={`glass inline-flex items-center gap-1 rounded-full px-3 py-1 transition active:scale-95 ${liked ? "text-rose-500" : "hover:text-rose-500"}`}
+          >
+            <Heart className={`h-3.5 w-3.5 transition ${liked ? "fill-current scale-110" : ""}`} />
+            {formatK(img.likes + (liked ? 1 : 0))}
+          </button>
           <span className="glass inline-flex items-center gap-1 rounded-full px-3 py-1">
             <Download className="h-3.5 w-3.5" /> {formatK(img.downloads)}
           </span>
