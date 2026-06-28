@@ -9,38 +9,161 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrendingRouteImport } from './routes/trending'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ImageIdRouteImport } from './routes/image.$id'
+import { Route as DownloadIdRouteImport } from './routes/download.$id'
+import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 
+const TrendingRoute = TrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesRoute = CategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImageIdRoute = ImageIdRouteImport.update({
+  id: '/image/$id',
+  path: '/image/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadIdRoute = DownloadIdRouteImport.update({
+  id: '/download/$id',
+  path: '/download/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategorySlugRoute = CategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/categories': typeof CategoriesRoute
+  '/search': typeof SearchRoute
+  '/trending': typeof TrendingRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/download/$id': typeof DownloadIdRoute
+  '/image/$id': typeof ImageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/categories': typeof CategoriesRoute
+  '/search': typeof SearchRoute
+  '/trending': typeof TrendingRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/download/$id': typeof DownloadIdRoute
+  '/image/$id': typeof ImageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/categories': typeof CategoriesRoute
+  '/search': typeof SearchRoute
+  '/trending': typeof TrendingRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/download/$id': typeof DownloadIdRoute
+  '/image/$id': typeof ImageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/categories'
+    | '/search'
+    | '/trending'
+    | '/category/$slug'
+    | '/download/$id'
+    | '/image/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/categories'
+    | '/search'
+    | '/trending'
+    | '/category/$slug'
+    | '/download/$id'
+    | '/image/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/categories'
+    | '/search'
+    | '/trending'
+    | '/category/$slug'
+    | '/download/$id'
+    | '/image/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  CategoriesRoute: typeof CategoriesRoute
+  SearchRoute: typeof SearchRoute
+  TrendingRoute: typeof TrendingRoute
+  CategorySlugRoute: typeof CategorySlugRoute
+  DownloadIdRoute: typeof DownloadIdRoute
+  ImageIdRoute: typeof ImageIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trending': {
+      id: '/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof TrendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories': {
+      id: '/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +171,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/image/$id': {
+      id: '/image/$id'
+      path: '/image/$id'
+      fullPath: '/image/$id'
+      preLoaderRoute: typeof ImageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download/$id': {
+      id: '/download/$id'
+      path: '/download/$id'
+      fullPath: '/download/$id'
+      preLoaderRoute: typeof DownloadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/category/$slug': {
+      id: '/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  CategoriesRoute: CategoriesRoute,
+  SearchRoute: SearchRoute,
+  TrendingRoute: TrendingRoute,
+  CategorySlugRoute: CategorySlugRoute,
+  DownloadIdRoute: DownloadIdRoute,
+  ImageIdRoute: ImageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
