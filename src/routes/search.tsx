@@ -4,12 +4,10 @@ import { z } from "zod";
 import { Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { MasonryFeed } from "@/components/MasonryFeed";
-import { CATEGORIES } from "@/lib/categories";
 import { trackSearch } from "@/lib/analytics";
 
 const schema = z.object({
   q: fallback(z.string(), "").default(""),
-  cat: fallback(z.string(), "").default(""),
   order: fallback(z.enum(["popular", "latest"]), "popular").default("popular"),
 });
 
