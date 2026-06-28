@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
+import { Footer } from "@/components/Footer";
 
 function NotFoundComponent() {
   return (
@@ -110,6 +111,7 @@ function RootComponent() {
       <div className="min-h-screen pb-24 md:pb-0">
         <Header />
         <Outlet />
+        <Footer />
         <BottomNav />
       </div>
     </QueryClientProvider>
