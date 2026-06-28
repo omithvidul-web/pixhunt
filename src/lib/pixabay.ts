@@ -17,6 +17,7 @@ export interface PixabayImage {
   downloads: number;
   likes: number;
   user: string;
+  userImageURL?: string;
   fullHDURL?: string;
   imageURL?: string;
 }
