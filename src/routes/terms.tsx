@@ -4,10 +4,18 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms of Service — PixHunt" },
-      { name: "description", content: "Terms of Service for PixHunt — usage rules, image licensing, and disclaimers." },
+      { name: "description", content: "PixHunt Terms of Service — usage rules, Pixabay image licensing, acceptable use, and disclaimers." },
       { property: "og:title", content: "PixHunt Terms of Service" },
       { property: "og:description", content: "Usage rules, licensing, and disclaimers for PixHunt." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://pixhunt.lovable.app/terms" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "PixHunt Terms of Service" },
+      { name: "twitter:description", content: "Usage rules, licensing, and disclaimers for PixHunt." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
     ],
+    links: [{ rel: "canonical", href: "https://pixhunt.lovable.app/terms" }],
   }),
   component: TermsPage,
 });
