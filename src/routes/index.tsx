@@ -113,6 +113,62 @@ function Home() {
         </h2>
         <MasonryFeed keyPrefix="home-recommended" q="aesthetic" order="popular" />
       </section>
+
+      {/* Why PixHunt */}
+      <section className="space-y-4 px-4">
+        <h2 className="text-center font-display text-2xl font-bold sm:text-3xl">Why <span className="text-gradient-brand">PixHunt</span>?</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { icon: ImageIcon, title: "Millions of Free Images", text: "Search Pixabay's massive library of royalty-free photos. New images added daily." },
+            { icon: Sparkles, title: "4K Quality Downloads", text: "Get HD, Full HD, 2K, and 4K resolution where available. Perfect for wallpapers and projects." },
+            { icon: Download, title: "One-Tap Download", text: "No signup, no watermark. Download directly to your gallery in seconds." },
+            { icon: InfinityIcon, title: "No Limits", text: "Use for commercial or personal projects. Blog, YouTube, social media — all allowed under Pixabay License." },
+            { icon: Gauge, title: "Light & Fast", text: "Small app size, fast search, smooth scrolling. Works on all devices." },
+            { icon: ShieldCheck, title: "Safe & Legal", text: "All images from Pixabay official API. 100% free license, no copyright worries." },
+          ].map((f) => (
+            <div key={f.title} className="glass rounded-2xl p-5">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-background/60">
+                <f.icon className="h-5 w-5 text-primary" />
+              </span>
+              <h3 className="mt-3 font-semibold">{f.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="space-y-4 px-4">
+        <h2 className="text-center font-display text-2xl font-bold sm:text-3xl">How It Works</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { icon: SearchIcon, step: "1. Search", text: 'Type anything — "sunset", "cat", "4k wallpaper".' },
+            { icon: MousePointerClick, step: "2. Choose", text: "Browse HD to 4K quality options." },
+            { icon: Download, step: "3. Download", text: "Tap download and it's saved to your gallery instantly." },
+          ].map((s) => (
+            <div key={s.step} className="glass rounded-2xl p-5 text-center">
+              <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl" style={{ background: "var(--gradient-brand)" }}>
+                <s.icon className="h-6 w-6 text-white" />
+              </span>
+              <h3 className="mt-3 font-semibold">{s.step}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{s.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-4">
+        <div className="glass mx-auto max-w-3xl rounded-3xl p-8 text-center">
+          <h2 className="font-display text-2xl font-bold sm:text-3xl">Ready to Find Your Perfect Image?</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Join thousands of users downloading HD & 4K photos daily.</p>
+          <Link to="/search" search={{ q: "wallpaper" }} className="bg-gradient-brand mt-5 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-glow transition hover:scale-105">
+            <SearchIcon className="h-4 w-4" /> Start Searching
+          </Link>
+          <p className="mt-4 text-xs text-muted-foreground">Powered by Pixabay · 100% Free · No Watermarks · No Login</p>
+        </div>
+      </section>
     </main>
   );
 }
+
