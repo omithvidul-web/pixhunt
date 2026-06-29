@@ -10,11 +10,20 @@ import { searchImages } from "@/lib/pixabay";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PixHunt — Hunt the Perfect Image" },
-      { name: "description", content: "Discover and download millions of HD, Full HD, 2K and 4K images. Wallpapers, art, anime, nature and more." },
+      { title: "PixHunt — Hunt the Perfect Image | Free HD & 4K Wallpapers" },
+      { name: "description", content: "Discover and download millions of free HD, Full HD, 2K and 4K images. Wallpapers, art, anime, nature, cars and more — no signup, no watermarks." },
+      { name: "keywords", content: "image search, free images, hd wallpapers, 4k wallpapers, anime, nature, pixabay, photo download" },
       { property: "og:title", content: "PixHunt — Hunt the Perfect Image" },
-      { property: "og:description", content: "Discover and download millions of HD, Full HD, 2K and 4K images." },
+      { property: "og:description", content: "Discover and download millions of free HD, Full HD, 2K and 4K images." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://pixhunt.lovable.app/" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "PixHunt — Hunt the Perfect Image" },
+      { name: "twitter:description", content: "Discover and download millions of free HD, Full HD, 2K and 4K images." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
     ],
+    links: [{ rel: "canonical", href: "https://pixhunt.lovable.app/" }],
   }),
   component: Home,
 });
