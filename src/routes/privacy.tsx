@@ -4,10 +4,18 @@ export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy — PixHunt" },
-      { name: "description", content: "Privacy Policy for PixHunt — how we handle data, third-party services, and your rights." },
+      { name: "description", content: "PixHunt Privacy Policy — how we handle data, third-party services like Pixabay and AdMob, and your rights as a user." },
       { property: "og:title", content: "PixHunt Privacy Policy" },
       { property: "og:description", content: "How PixHunt handles data and third-party services." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://pixhunt.lovable.app/privacy" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "PixHunt Privacy Policy" },
+      { name: "twitter:description", content: "How PixHunt handles data and third-party services." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
     ],
+    links: [{ rel: "canonical", href: "https://pixhunt.lovable.app/privacy" }],
   }),
   component: PrivacyPage,
 });

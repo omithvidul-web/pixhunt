@@ -4,11 +4,19 @@ import { Mail, Bug, Briefcase, Shield } from "lucide-react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact PixHunt — Support & Feedback" },
-      { name: "description", content: "Get in touch with the PixHunt team. Support, business inquiries, bug reports and DMCA." },
+      { title: "Contact PixHunt — Support, Feedback & Business Inquiries" },
+      { name: "description", content: "Get in touch with the PixHunt team for support, business inquiries, bug reports, or DMCA. We typically respond within 24-48 hours." },
       { property: "og:title", content: "Contact PixHunt" },
-      { property: "og:description", content: "Support, business inquiries, bug reports and DMCA." },
+      { property: "og:description", content: "Support, business inquiries, bug reports and DMCA contact for PixHunt." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://pixhunt.lovable.app/contact" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Contact PixHunt" },
+      { name: "twitter:description", content: "Support, business inquiries, bug reports and DMCA." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
     ],
+    links: [{ rel: "canonical", href: "https://pixhunt.lovable.app/contact" }],
   }),
   component: ContactPage,
 });

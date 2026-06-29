@@ -71,8 +71,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "PixHunt — Hunt the Perfect Image" },
       { name: "twitter:description", content: "Search and download millions of high-quality images. HD, Full HD, 2K, and 4K wallpapers, art, anime, nature, cars, and more." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { property: "og:site_name", content: "PixHunt" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
