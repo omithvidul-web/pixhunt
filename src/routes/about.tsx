@@ -3,11 +3,19 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About PixHunt — Free HD & 4K Image Search" },
-      { name: "description", content: "PixHunt is a free image search and download app powered by Pixabay. Millions of HD, Full HD, 2K and 4K images." },
+      { title: "About PixHunt — Free HD & 4K Image Search Powered by Pixabay" },
+      { name: "description", content: "Learn about PixHunt — a free image search and download app powered by Pixabay. Millions of HD, Full HD, 2K and 4K images with no signup." },
       { property: "og:title", content: "About PixHunt" },
-      { property: "og:description", content: "Free image search and download app powered by Pixabay." },
+      { property: "og:description", content: "Free image search and download app powered by Pixabay. Millions of HD to 4K photos, watermark-free." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://pixhunt.lovable.app/about" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "About PixHunt" },
+      { name: "twitter:description", content: "Free image search and download app powered by Pixabay." },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8756f5cc-5b40-487d-b1fa-10e1b6f1fb4c" },
     ],
+    links: [{ rel: "canonical", href: "https://pixhunt.lovable.app/about" }],
   }),
   component: AboutPage,
 });
