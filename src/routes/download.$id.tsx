@@ -169,6 +169,7 @@ function DownloadPage() {
           </div>
         )}
 
+        {!ready ? (
           <>
             <h1 className="mt-8 flex items-center justify-center gap-2 text-2xl font-black">
               <ShieldCheck className="h-6 w-6 text-primary" />
