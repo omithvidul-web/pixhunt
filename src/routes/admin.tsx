@@ -11,6 +11,9 @@ import {
   totalDownloads, totalSearches, resetAnalytics,
 } from "@/lib/analytics";
 import { CATEGORIES } from "@/lib/categories";
+import {
+  ADMOB_FIELDS, getAdMobIds, saveAdMobIds, exportAdMobConfig, type AdMobIds,
+} from "@/lib/admob";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — PixHunt" }, { name: "robots", content: "noindex" }] }),
@@ -29,7 +32,7 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 function AdminPage() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
-  const [tab, setTab] = useState<"overview" | "ads" | "settings">("overview");
+  const [tab, setTab] = useState<"overview" | "ads" | "admob" | "settings">("overview");
 
   useEffect(() => {
     if (!isAdmin()) { navigate({ to: "/" }); return; }
@@ -37,6 +40,13 @@ function AdminPage() {
   }, [navigate]);
 
   if (!ready) return null;
+
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "ads", label: "Adsterra Links" },
+    { id: "admob", label: "Manage AdMob IDs" },
+    { id: "settings", label: "Settings" },
+  ] as const;
 
   return (
     <main className="space-y-6 px-4 pb-10 pt-4">
@@ -51,23 +61,81 @@ function AdminPage() {
       </header>
 
       <div className="hide-scrollbar flex gap-2 overflow-x-auto">
-        {(["overview", "ads", "settings"] as const).map((t) => (
+        {tabs.map((t) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold capitalize ${
-              tab === t ? "bg-gradient-brand text-white" : "glass"
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold ${
+              tab === t.id ? "bg-gradient-brand text-white" : "glass"
             }`}
           >
-            {t === "ads" ? "Adsterra Links" : t}
+            {t.label}
           </button>
         ))}
       </div>
 
       {tab === "overview" && <OverviewTab />}
       {tab === "ads" && <AdsTab />}
+      {tab === "admob" && <AdMobTab />}
       {tab === "settings" && <SettingsTab />}
     </main>
+  );
+}
+
+function AdMobTab() {
+  const [ids, setIds] = useState<AdMobIds>(getAdMobIds());
+  const [saved, setSaved] = useState(false);
+
+  function update<K extends keyof AdMobIds>(k: K, v: string) {
+    setIds((p) => ({ ...p, [k]: v }));
+    setSaved(false);
+  }
+  function save() {
+    saveAdMobIds(ids);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="glass rounded-2xl p-4 text-sm text-muted-foreground">
+        These IDs are saved locally and exported to{" "}
+        <code className="rounded bg-background/60 px-1.5 py-0.5">admob-config.json</code>.
+        Replace the file in <code>public/</code> and redeploy so the Android app fetches the new values at startup.
+      </div>
+
+      <div className="glass space-y-3 rounded-2xl p-4">
+        <h3 className="font-bold">AdMob IDs</h3>
+        <div className="grid gap-3">
+          {ADMOB_FIELDS.map((f) => (
+            <label key={f.key} className="block">
+              <span className="mb-1 block text-xs font-semibold text-muted-foreground">{f.label}</span>
+              <input
+                value={ids[f.key]}
+                onChange={(e) => update(f.key, e.target.value)}
+                className="w-full rounded-full bg-background/60 px-4 py-2 font-mono text-xs outline-none"
+                placeholder={f.label}
+                spellCheck={false}
+              />
+            </label>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2 pt-2">
+          <button
+            onClick={save}
+            className="bg-gradient-brand rounded-full px-4 py-2 text-sm font-bold text-white"
+          >
+            {saved ? "Saved ✓" : "Save"}
+          </button>
+          <button
+            onClick={() => exportAdMobConfig(ids)}
+            className="glass rounded-full px-4 py-2 text-sm font-medium"
+          >
+            Export admob-config.json
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,7 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Fragment } from "react";
 import { searchImages, type SearchParams } from "@/lib/pixabay";
 import { ImageCard, ImageCardSkeleton } from "./ImageCard";
+import { NativeAdSlot } from "./NativeAdSlot";
 
 interface Props extends Omit<SearchParams, "page"> {
   keyPrefix: string;
@@ -65,7 +66,12 @@ export function MasonryFeed(props: Props) {
   return (
     <>
       <div className="masonry">
-        {images.map((img) => <ImageCard key={img.id} img={img} />)}
+        {images.map((img, i) => (
+          <Fragment key={img.id}>
+            <ImageCard img={img} />
+            {i > 0 && i % 8 === 7 && <NativeAdSlot index={i} />}
+          </Fragment>
+        ))}
       </div>
       <div ref={sentinel} className="h-10" />
       {query.isFetchingNextPage && (

@@ -109,6 +109,20 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Tell Android to show/hide the anchored banner whenever the app mounts.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    import("@/lib/admob").then(({ isAndroidApp, bridge }) => {
+      if (isAndroidApp()) bridge().showBanner();
+    });
+    return () => {
+      import("@/lib/admob").then(({ isAndroidApp, bridge }) => {
+        if (isAndroidApp()) bridge().hideBanner();
+      });
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen pb-24 md:pb-0">

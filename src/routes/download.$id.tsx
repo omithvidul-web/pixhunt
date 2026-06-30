@@ -2,12 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useRef, useState } from "react";
-import { Download, ShieldCheck, X } from "lucide-react";
+import { Download, ShieldCheck, X, Zap } from "lucide-react";
 import { getActiveAdsterra, getDownloadTimer } from "@/lib/settings";
 import { trackDownload } from "@/lib/analytics";
 import { getImageById } from "@/lib/pixabay";
 import { useQuery } from "@tanstack/react-query";
 import { Logo } from "@/components/Logo";
+import { isAndroidApp, bridge, onReward } from "@/lib/admob";
 
 const schema = z.object({
   size: fallback(z.string(), "HD").default("HD"),
@@ -58,15 +59,31 @@ function DownloadPage() {
   const ext = (url.split("?")[0].split(".").pop() || "jpg").toLowerCase();
   const filename = `pixhunt-${id}-${size}.${ext}`;
 
-  // Open Adsterra once
+  const inApp = isAndroidApp();
+
+  // Open Adsterra once — WEB ONLY. In the Android app we show an Interstitial instead.
   useEffect(() => {
     if (adsOpened.current) return;
     adsOpened.current = true;
+    if (inApp) {
+      bridge().showInterstitial();
+      return;
+    }
     const ads = getActiveAdsterra();
     if (ads) {
       try { window.open(ads, "_blank", "noopener,noreferrer"); } catch {}
     }
-  }, []);
+  }, [inApp]);
+
+  // Reward unlock listener (Android only)
+  useEffect(() => {
+    if (!inApp) return;
+    return onReward("download:" + id, () => {
+      // Reward earned — finish immediately.
+      setRemaining(0);
+      setReady(true);
+    });
+  }, [inApp, id]);
 
   // Countdown
   useEffect(() => {
@@ -79,12 +96,27 @@ function DownloadPage() {
   const startDownload = async () => {
     setError(null);
     trackDownload();
+    if (inApp) {
+      // Hand off to the native side so it can save with the Download Manager.
+      bridge().triggerDownload(url, filename);
+      return;
+    }
     try {
       await triggerBlobDownload(url, filename);
     } catch (e: any) {
       setError(e?.message || "Download failed");
       window.open(url, "_blank", "noopener,noreferrer");
     }
+  };
+
+  const unlockHighSpeed = () => {
+    if (!inApp) return;
+    bridge().showRewarded("download:" + id);
+  };
+
+  const unlockPremium = () => {
+    if (!inApp) return;
+    bridge().showRewardedInterstitial("download:" + id);
   };
 
   const close = () => {
@@ -119,6 +151,23 @@ function DownloadPage() {
             <div className="skeleton h-48 w-48" />
           )}
         </div>
+
+        {!ready && inApp && (
+          <div className="mt-6 grid w-full grid-cols-2 gap-2">
+            <button
+              onClick={unlockHighSpeed}
+              className="glass flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold"
+            >
+              <Zap className="h-4 w-4 text-primary" /> Skip with Ad
+            </button>
+            <button
+              onClick={unlockPremium}
+              className="glass flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold"
+            >
+              <Zap className="h-4 w-4 text-primary" /> Premium Unlock
+            </button>
+          </div>
+        )}
 
         {!ready ? (
           <>
