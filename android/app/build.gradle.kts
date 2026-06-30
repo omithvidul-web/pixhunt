@@ -22,6 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
+        buildConfigField("String", "WEB_URL", "\"https://pixhunt.lovable.app\"")
     }
 
     signingConfigs {
