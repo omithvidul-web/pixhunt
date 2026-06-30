@@ -152,7 +152,23 @@ function DownloadPage() {
           )}
         </div>
 
-        {!ready ? (
+        {!ready && inApp && (
+          <div className="mt-6 grid w-full grid-cols-2 gap-2">
+            <button
+              onClick={unlockHighSpeed}
+              className="glass flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold"
+            >
+              <Zap className="h-4 w-4 text-primary" /> Skip with Ad
+            </button>
+            <button
+              onClick={unlockPremium}
+              className="glass flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-semibold"
+            >
+              <Zap className="h-4 w-4 text-primary" /> Premium Unlock
+            </button>
+          </div>
+        )}
+
           <>
             <h1 className="mt-8 flex items-center justify-center gap-2 text-2xl font-black">
               <ShieldCheck className="h-6 w-6 text-primary" />
