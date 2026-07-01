@@ -30,7 +30,7 @@ jobs:
       - name: Generate Gradle wrapper
         run: gradle wrapper --gradle-version 8.9
 
-      - name: Decode keystore
+      - name: Configure signing keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -38,6 +38,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Using provided release keystore."
             echo "$KEYSTORE_BASE64" | base64 -d > release.keystore
             cat > keystore.properties <<EOF
           storeFile=$(pwd)/release.keystore
@@ -45,9 +46,21 @@ jobs:
           keyAlias=$KEY_ALIAS
           keyPassword=$KEY_PASSWORD
           EOF
-            echo "Keystore configured for release signing."
           else
-            echo "No signing secrets found. Building unsigned release (debug signing)."
+            echo "No release keystore provided. Generating debug keystore for signing."
+            keytool -genkeypair -v \
+              -keystore release.keystore \
+              -storetype PKCS12 \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -alias pixhunt \
+              -storepass android -keypass android \
+              -dname "CN=PixHunt, OU=Dev, O=PixHunt, L=NA, S=NA, C=US"
+            cat > keystore.properties <<EOF
+          storeFile=$(pwd)/release.keystore
+          storePassword=android
+          keyAlias=pixhunt
+          keyPassword=android
+          EOF
           fi
 
       - name: Build Release APK
