@@ -69,6 +69,16 @@ jobs:
       - name: Build Release AAB
         run: ./gradlew :app:bundleRelease --stacktrace
 
+      - name: Verify APK signature (apksigner)
+        run: |
+          BUILD_TOOLS_DIR=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -n 1)
+          APKSIGNER="${BUILD_TOOLS_DIR}apksigner"
+          echo "Using apksigner at: $APKSIGNER"
+          APK_PATH=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
+          echo "Verifying: $APK_PATH"
+          "$APKSIGNER" verify --verbose --print-certs "$APK_PATH"
+          echo "APK signature verification succeeded — installable on devices."
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
