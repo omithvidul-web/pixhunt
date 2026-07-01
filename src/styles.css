@@ -204,3 +204,12 @@
 @media (min-width: 1024px) { .masonry { column-count: 4; } }
 @media (min-width: 1536px) { .masonry { column-count: 5; } }
 .masonry > * { break-inside: avoid; margin-bottom: 0.75rem; }
+
+#lovable-badge,
+#lovable-badge-root,
+[id^="lovable-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
