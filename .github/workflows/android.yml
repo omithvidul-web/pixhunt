@@ -30,6 +30,46 @@ jobs:
       - name: Generate Gradle wrapper
         run: gradle wrapper --gradle-version 8.9
 
+      - name: Generate Android launcher icons and splash from resources/icon.png
+        working-directory: ${{ github.workspace }}
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 <<'PY'
+          from PIL import Image, ImageDraw
+          import os
+          src_path = "resources/icon.png"
+          if not os.path.exists(src_path):
+              raise SystemExit("resources/icon.png missing")
+          src = Image.open(src_path).convert("RGBA")
+          w, h = src.size; s = min(w, h)
+          src = src.crop(((w-s)//2, (h-s)//2, (w+s)//2, (h+s)//2))
+          master = src.resize((1024, 1024), Image.LANCZOS)
+
+          base = "android/app/src/main/res"
+          sizes = {"mdpi":48,"hdpi":72,"xhdpi":96,"xxhdpi":144,"xxxhdpi":192}
+          for k, sz in sizes.items():
+              d = f"{base}/mipmap-{k}"; os.makedirs(d, exist_ok=True)
+              icon = master.resize((sz, sz), Image.LANCZOS)
+              icon.save(f"{d}/ic_launcher.png")
+              mask = Image.new("L", (sz, sz), 0)
+              ImageDraw.Draw(mask).ellipse((0, 0, sz, sz), fill=255)
+              r = icon.copy(); r.putalpha(mask); r.save(f"{d}/ic_launcher_round.png")
+
+          fg_sizes = {"mdpi":108,"hdpi":162,"xhdpi":216,"xxhdpi":324,"xxxhdpi":432}
+          for k, sz in fg_sizes.items():
+              d = f"{base}/mipmap-{k}"; os.makedirs(d, exist_ok=True)
+              canvas = Image.new("RGBA", (sz, sz), (0, 0, 0, 0))
+              inner = int(sz * 0.66)
+              l = master.resize((inner, inner), Image.LANCZOS)
+              canvas.paste(l, ((sz-inner)//2, (sz-inner)//2), l)
+              canvas.save(f"{d}/ic_launcher_foreground.png")
+
+          nd = f"{base}/drawable-nodpi"; os.makedirs(nd, exist_ok=True)
+          master.resize((512, 512), Image.LANCZOS).save(f"{nd}/pixhunt_logo.png")
+          print("Icons and splash logo regenerated from resources/icon.png")
+          PY
+
+
       - name: Configure signing keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
