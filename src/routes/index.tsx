@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Zap, Flame, Sparkles, Image as ImageIcon, Download, Gauge, ShieldCheck, Infinity as InfinityIcon, Search as SearchIcon, MousePointerClick } from "lucide-react";
+import { Zap, Flame, Sparkles, Image as ImageIcon, Download, Gauge, ShieldCheck, Infinity as InfinityIcon, Search as SearchIcon, MousePointerClick, Monitor } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HorizontalImageRail } from "@/components/HorizontalImageRail";
 import { MasonryFeed } from "@/components/MasonryFeed";
@@ -112,8 +112,9 @@ function Home() {
         </div>
       </section>
 
+      <HorizontalImageRail title="4K Wallpapers" icon={<Monitor className="h-5 w-5 text-primary" />} query="wallpaper 4k" seeMoreTo="/search" />
       <HorizontalImageRail title="Trending Today" icon={<Flame className="h-5 w-5 text-orange-500" />} query="nature landscape" seeMoreTo="/trending" />
-      <HorizontalImageRail title="Popular Wallpapers" icon={<Sparkles className="h-5 w-5 text-primary" />} category="backgrounds" seeMoreTo="/search" />
+      <HorizontalImageRail title="Popular" icon={<Sparkles className="h-5 w-5 text-primary" />} category="backgrounds" seeMoreTo="/search" />
 
       {/* Recommended masonry */}
       <section className="space-y-3 px-4">
