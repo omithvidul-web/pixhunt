@@ -112,8 +112,9 @@ function Home() {
         </div>
       </section>
 
+      <HorizontalImageRail title="4K Wallpapers" icon={<Monitor className="h-5 w-5 text-primary" />} query="wallpaper 4k" seeMoreTo="/search" />
       <HorizontalImageRail title="Trending Today" icon={<Flame className="h-5 w-5 text-orange-500" />} query="nature landscape" seeMoreTo="/trending" />
-      <HorizontalImageRail title="Popular Wallpapers" icon={<Sparkles className="h-5 w-5 text-primary" />} category="backgrounds" seeMoreTo="/search" />
+      <HorizontalImageRail title="Popular" icon={<Sparkles className="h-5 w-5 text-primary" />} category="backgrounds" seeMoreTo="/search" />
 
       {/* Recommended masonry */}
       <section className="space-y-3 px-4">
