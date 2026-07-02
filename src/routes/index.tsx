@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Zap, Flame, Sparkles, Image as ImageIcon, Download, Gauge, ShieldCheck, Infinity as InfinityIcon, Search as SearchIcon, MousePointerClick } from "lucide-react";
+import { Zap, Flame, Sparkles, Image as ImageIcon, Download, Gauge, ShieldCheck, Infinity as InfinityIcon, Search as SearchIcon, MousePointerClick, Monitor } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { HorizontalImageRail } from "@/components/HorizontalImageRail";
 import { MasonryFeed } from "@/components/MasonryFeed";
